@@ -10,6 +10,7 @@ import {
 import { Pencil, Check, X } from 'lucide-react';
 import type { User } from '../types';
 import { updateUser } from '../api/updateUser';
+import { showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import '../../products/components/ProductsTable.css';
 import '../../products/components/Pagination.css';
 interface UsersTableProps {
@@ -45,7 +46,7 @@ export const UsersTable = ({
     };
     const handleSaveEdit = async (id: number | string) => {
         if (!editFormData.name?.trim() || !editFormData.username?.trim()) {
-            alert('El nombre y usuario son obligatorios');
+            showErrorAlert('Campos Incompletos', 'El nombre y usuario son obligatorios');
             return;
         }
         setIsSaving(true); 
@@ -55,11 +56,12 @@ export const UsersTable = ({
                 username: editFormData.username,
                 role: editFormData.role
             });
+            showSuccessAlert('Actualización Exitosa', 'El usuario ha sido actualizado correctamente.');
             setEditingRowId(null); 
             if (onUserUpdated) onUserUpdated(); 
         } catch (error) {
             console.error('Failed to update user', error);
-            alert('Error al actualizar el usuario');
+            showErrorAlert('Error de Actualización', 'Error al actualizar el usuario');
         } finally {
             setIsSaving(false); 
         }

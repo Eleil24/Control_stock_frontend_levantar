@@ -73,9 +73,9 @@ export const DashboardPage: React.FC = () => {
         fetchDashboardData();
     }, []); 
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('es-CO', {
+        return new Intl.NumberFormat('es-PE', {
             style: 'currency',
-            currency: 'COP',
+            currency: 'PEN',
             minimumFractionDigits: 0
         }).format(amount);
     }

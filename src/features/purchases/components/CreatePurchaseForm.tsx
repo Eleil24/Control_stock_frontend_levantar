@@ -4,6 +4,7 @@ import { getProducts } from '../../products/api/getProducts';
 import { getSuppliers } from '../../suppliers/api/getSuppliers';
 import type { Product } from '../../products/types';
 import type { Supplier } from '../../suppliers/types';
+import { showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import './CreatePurchaseForm.css';
 interface CartItem {
     product: Product;
@@ -30,7 +31,7 @@ export const CreatePurchaseForm: React.FC = () => {
             setSuppliers(suppliersRes.data);
         } catch (err) {
             console.error('Error fetching initial data:', err);
-            alert('Error al cargar datos del servidor.');
+            showErrorAlert('Error', 'Error al cargar datos del servidor.');
         } finally {
             setIsLoadingInitialData(false);
         }
@@ -82,15 +83,15 @@ export const CreatePurchaseForm: React.FC = () => {
     );
     const handleSubmit = async () => {
         if (cart.length === 0) {
-            alert("Debe agregar al menos un producto a la compra.");
+            showErrorAlert('Carrito Vacío', 'Debe agregar al menos un producto a la compra.');
             return;
         }
         if (!invoiceNumber.trim()) {
-            alert("Por favor ingresa el Número de Factura (invoiceNumber).");
+            showErrorAlert('Falta Factura', 'Por favor ingresa el Número de Factura (invoiceNumber).');
             return;
         }
         if (!supplierId) {
-            alert("Por favor selecciona un Proveedor.");
+            showErrorAlert('Falta Proveedor', 'Por favor selecciona un Proveedor.');
             return;
         }
         const purchaseData = {
@@ -107,7 +108,7 @@ export const CreatePurchaseForm: React.FC = () => {
             setCart([]);
             setInvoiceNumber('');
             setSupplierId('');
-            alert("¡Compra ingresada con éxito! El inventario ha sido actualizado.");
+            showSuccessAlert('Compra Registrada', '¡Compra ingresada con éxito! El inventario ha sido actualizado.');
             fetchInitialData();
         } catch (e) {
             console.error(e);
@@ -226,7 +227,7 @@ export const CreatePurchaseForm: React.FC = () => {
                                         {}
                                         <td>
                                             <div className="cost-input-wrapper">
-                                                <span className="currency-symbol">$</span>
+                                                <span className="currency-symbol">S/</span>
                                                 <input
                                                     type="number"
                                                     min="0"
@@ -254,7 +255,7 @@ export const CreatePurchaseForm: React.FC = () => {
                                             </div>
                                         </td>
                                         <td className="item-subtotal">
-                                            ${(item.unitCost * item.quantity).toFixed(2)}
+                                            S/ {(item.unitCost * item.quantity).toFixed(2)}
                                         </td>
                                         <td>
                                             <button
@@ -274,7 +275,7 @@ export const CreatePurchaseForm: React.FC = () => {
                 <div className="boleta-footer">
                     <div className="total-section">
                         <span>TOTAL COMPRA:</span>
-                        <span className="total-amount">${calculateTotal().toFixed(2)}</span>
+                        <span className="total-amount">S/ {calculateTotal().toFixed(2)}</span>
                     </div>
                     {isError && <div className="error-message">Error: {error}</div>}
                     <button

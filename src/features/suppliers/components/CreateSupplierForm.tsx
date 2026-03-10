@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCreateSupplier } from '../hooks/useCreateSupplier';
+import { showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import './CreateSupplierForm.css';
 interface CreateSupplierFormProps {
     onCancel?: () => void;
@@ -12,17 +13,18 @@ export const CreateSupplierForm: React.FC<CreateSupplierFormProps> = ({ onCancel
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!name.trim()) {
-            alert('El nombre del proveedor es obligatorio');
+            showErrorAlert('Campo Incompleto', 'El nombre del proveedor es obligatorio');
             return;
         }
         try {
             await mutate({ name, phone, email });
-            alert('¡Proveedor registrado con éxito!');
+            showSuccessAlert('Registro Exitoso', '¡Proveedor registrado con éxito!');
             setName('');
             setPhone('');
             setEmail('');
         } catch (err) {
             console.error(err);
+            showErrorAlert('Error', 'Hubo un problema al registrar el proveedor.');
         }
     };
     return (

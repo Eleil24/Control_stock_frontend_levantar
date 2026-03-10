@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { UserPlus, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { UserPlus, Save } from 'lucide-react';
 import { createUser } from '../api/createUser';
+import { showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import './CreateUserPage.css';
 interface CreateUserPageProps {
     onCancel?: () => void;
@@ -11,12 +12,8 @@ export const CreateUserPage = ({ onCancel }: CreateUserPageProps) => {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('VENDEDOR');
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(null);
-        setSuccess(null);
         setIsLoading(true);
         try {
             await createUser({
@@ -25,13 +22,13 @@ export const CreateUserPage = ({ onCancel }: CreateUserPageProps) => {
                 password,
                 role
             });
-            setSuccess(`Usuario ${name} (${role}) creado exitosamente.`);
+            showSuccessAlert('Usuario Registrado', `Usuario ${name} (${role}) creado exitosamente.`);
             setName('');
             setUsername('');
             setPassword('');
             setRole('VENDEDOR');
         } catch (err: any) {
-            setError(err.message || 'Error desconocido al crear usuario');
+            showErrorAlert('Error al Crear', err.message || 'Error desconocido al crear usuario');
         } finally {
             setIsLoading(false);
         }
@@ -48,18 +45,6 @@ export const CreateUserPage = ({ onCancel }: CreateUserPageProps) => {
                 </div>
             </div>
             <div className="card form-card">
-                {error && (
-                    <div className="alert alert-error">
-                        <AlertCircle size={20} />
-                        <span>{error}</span>
-                    </div>
-                )}
-                {success && (
-                    <div className="alert alert-success">
-                        <CheckCircle2 size={20} />
-                        <span>{success}</span>
-                    </div>
-                )}
                 <form onSubmit={handleSubmit} className="form-layout">
                     <div className="form-grid">
                         <div className="form-group">
@@ -125,8 +110,6 @@ export const CreateUserPage = ({ onCancel }: CreateUserPageProps) => {
                                 setUsername('');
                                 setPassword('');
                                 setRole('VENDEDOR');
-                                setError(null);
-                                setSuccess(null);
                             }}
                             disabled={isLoading}
                         >

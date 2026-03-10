@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCreateSale } from '../hooks/useCreateSale';
 import { getProducts } from '../../products/api/getProducts';
 import type { Product } from '../../products/types';
+import { showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import './CreateSaleForm.css';
 interface CartItem {
     product: Product;
@@ -34,7 +35,7 @@ export const CreateSaleForm: React.FC = () => {
             const existingItem = prevCart.find(item => item.product.id === product.id);
             if (existingItem) {
                 if (existingItem.quantity >= product.stock) {
-                    alert(`No hay más stock disponible de ${product.name}`);
+                    showErrorAlert('Stock Agotado', `No hay más stock disponible de ${product.name}`);
                     return prevCart;
                 }
                 return prevCart.map(item =>
@@ -53,7 +54,7 @@ export const CreateSaleForm: React.FC = () => {
         if (isNaN(newQuantity) || newQuantity <= 0) return;
         const productInState = products.find(p => p.id === productId);
         if (productInState && newQuantity > productInState.stock) {
-            alert(`Stock insuficiente. El máximo de ${productInState.name} es ${productInState.stock}`);
+            showErrorAlert('Stock Insuficiente', `El máximo de ${productInState.name} es ${productInState.stock}`);
             return;
         }
         setCart(prevCart =>
@@ -72,11 +73,11 @@ export const CreateSaleForm: React.FC = () => {
     );
     const handleSubmit = async () => {
         if (cart.length === 0) {
-            alert("El carrito está vacío.");
+            showErrorAlert('Carrito Vacío', 'El carrito está vacío.');
             return;
         }
         if (!customerName.trim()) {
-            alert("Por favor ingresa el nombre del cliente.");
+            showErrorAlert('Falta Cliente', 'Por favor ingresa el nombre del cliente.');
             return;
         }
         const saleData = {
@@ -89,7 +90,7 @@ export const CreateSaleForm: React.FC = () => {
         try {
             await mutate(saleData);
             setCart([]);
-            alert("¡Boleta generada con éxito!");
+            showSuccessAlert('Venta Exitosa', '¡Boleta generada con éxito!');
             fetchProducts();
         } catch (e) {
             console.error(e);
@@ -124,7 +125,7 @@ export const CreateSaleForm: React.FC = () => {
                                     style={{ opacity: remainingStock <= 0 ? 0.5 : 1, cursor: remainingStock <= 0 ? 'not-allowed' : 'pointer' }}
                                 >
                                     <h4>{product.name}</h4>
-                                    <p className="pos-product-price">${Number(product.price).toFixed(2)}</p>
+                                    <p className="pos-product-price">S/ {Number(product.price).toFixed(2)}</p>
                                     <p className="pos-product-stock">Stock disponible: {remainingStock}</p>
                                 </div>
                             );
@@ -193,9 +194,9 @@ export const CreateSaleForm: React.FC = () => {
                                                 className="quantity-input"
                                             />
                                         </td>
-                                        <td>${Number(item.product.price).toFixed(2)}</td>
+                                        <td>S/ {Number(item.product.price).toFixed(2)}</td>
                                         <td className="item-subtotal">
-                                            ${(item.product.price * item.quantity).toFixed(2)}
+                                            S/ {(item.product.price * item.quantity).toFixed(2)}
                                         </td>
                                         <td>
                                             <button
@@ -214,7 +215,7 @@ export const CreateSaleForm: React.FC = () => {
                 <div className="boleta-footer">
                     <div className="total-section">
                         <span>TOTAL A PAGAR:</span>
-                        <span className="total-amount">${calculateTotal().toFixed(2)}</span>
+                        <span className="total-amount">S/ {calculateTotal().toFixed(2)}</span>
                     </div>
                     {isError && <div className="error-message">Error: {error}</div>}
                     <button

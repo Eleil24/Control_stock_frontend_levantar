@@ -24,9 +24,9 @@ export const NetProfitTable = ({
     onPaginationChange
 }: NetProfitTableProps) => {
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('es-CO', {
+        return new Intl.NumberFormat('es-PE', {
             style: 'currency',
-            currency: 'COP',
+            currency: 'PEN',
             minimumFractionDigits: 0
         }).format(value);
     };
@@ -49,17 +49,17 @@ export const NetProfitTable = ({
             },
             {
                 accessorKey: 'totalSales',
-                header: 'Total Ventas ($)',
+                header: 'Total Ventas (S/ )',
                 cell: (info) => <span className="currency-cell text-green-600">{formatCurrency(info.getValue<number>())}</span>,
             },
             {
                 accessorKey: 'totalPurchases',
-                header: 'Total Compras ($)',
+                header: 'Total Compras (S/ )',
                 cell: (info) => <span className="currency-cell text-red-600">{formatCurrency(info.getValue<number>())}</span>,
             },
             {
                 accessorKey: 'netProfit',
-                header: 'Ganancia Neta ($)',
+                header: 'Ganancia Neta (S/ )',
                 cell: (info) => {
                     const value = info.getValue<number>();
                     return (

@@ -60,7 +60,7 @@ export const ProductPerformanceTable = ({
                 header: () => <div className="text-right">Precio Unitario</div>,
                 cell: (info) => (
                     <div className="text-right">
-                        <span>${info.getValue<number>().toFixed(2)}</span>
+                        <span>S/ {info.getValue<number>().toFixed(2)}</span>
                     </div>
                 ),
             },
@@ -69,7 +69,7 @@ export const ProductPerformanceTable = ({
                 header: () => <div className="text-right">Ingreso Estimado</div>,
                 cell: (info) => (
                     <div className="text-right">
-                        <span className="revenue-total">${info.getValue<number>().toFixed(2)}</span>
+                        <span className="revenue-total">S/ {info.getValue<number>().toFixed(2)}</span>
                     </div>
                 ),
             }
@@ -88,9 +88,9 @@ export const ProductPerformanceTable = ({
         manualPagination: true,
     });
     const formatCurrency = (amount: number) => {
-        return new Intl.NumberFormat('es-CO', {
+        return new Intl.NumberFormat('es-PE', {
             style: 'currency',
-            currency: 'COP',
+            currency: 'PEN',
             minimumFractionDigits: 0
         }).format(amount);
     }

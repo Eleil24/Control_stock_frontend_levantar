@@ -10,6 +10,7 @@ import {
 import { Pencil, Check, X } from 'lucide-react';
 import type { Supplier } from '../types';
 import { updateSupplier } from '../api/updateSupplier';
+import { showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import '../../products/components/ProductsTable.css';
 import '../../products/components/Pagination.css';
 interface SuppliersTableProps {
@@ -45,7 +46,7 @@ export const SuppliersTable = ({
     };
     const handleSaveEdit = async (id: number | string) => {
         if (!editFormData.name?.trim()) {
-            alert('El nombre del proveedor es obligatorio');
+            showErrorAlert('Campo Incompleto', 'El nombre del proveedor es obligatorio');
             return;
         }
         setIsSaving(true);
@@ -55,13 +56,14 @@ export const SuppliersTable = ({
                 phone: editFormData.phone,
                 email: editFormData.email
             });
+            showSuccessAlert('Actualización Exitosa', 'El proveedor ha sido actualizado correctamente.');
             setEditingRowId(null);
             if (onSupplierUpdated) {
                 onSupplierUpdated();
             }
         } catch (error) {
             console.error('Failed to update supplier', error);
-            alert('Error al actualizar el proveedor');
+            showErrorAlert('Error de Actualización', 'Error al actualizar el proveedor');
         } finally {
             setIsSaving(false);
         }

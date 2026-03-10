@@ -13,6 +13,7 @@ import { UsersListPage } from './features/users/pages/UsersListPage';
 import { Navbar } from './components/Navbar';
 import { AuthProvider, useAuth } from './features/auth/context/AuthContext';
 import { ProtectedRoute } from './features/auth/components/ProtectedRoute';
+import { showToastAlert } from './utils/alerts';
 import './App.css';
 const AppContent = () => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'list' | 'create' | 'movement' | 'movements-list' | 'low-stock-reports' | 'movement-history-reports' | 'inventory-valuation-reports' | 'product-performance-reports' | 'net-profit-reports' | 'sale' | 'supplier' | 'create-supplier' | 'purchase' | 'users' | 'create-user'>('dashboard');
@@ -22,6 +23,14 @@ const AppContent = () => {
       setActiveTab('sale'); 
     }
   }, [user, activeTab]);
+
+  useEffect(() => {
+    const loginSuccessName = localStorage.getItem('loginSuccess');
+    if (loginSuccessName) {
+      showToastAlert('success', `¡Bienvenido, ${loginSuccessName}!`);
+      localStorage.removeItem('loginSuccess');
+    }
+  }, []);
   return (
     <div className="app-layout">
       {}

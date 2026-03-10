@@ -19,6 +19,7 @@ export const LoginPage = () => {
         try {
             const data = await login(username, password);
             loginState(data.access_token, data.user);
+            localStorage.setItem('loginSuccess', data.user.name);
             window.location.href = '/';
         } catch (err: any) {
             setError(err.message || 'Error desconocido');

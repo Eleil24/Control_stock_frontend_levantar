@@ -10,6 +10,7 @@ import {
 import { Pencil, Check, X } from 'lucide-react';
 import type { Product, UpdateProductDto } from '../types';
 import { updateProduct } from '../api/updateProduct';
+import { showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import './ProductsTable.css';
 import './Pagination.css';
 interface ProductsTableProps {
@@ -47,13 +48,14 @@ export const ProductsTable = ({
         setIsSaving(true);
         try {
             await updateProduct(id, editFormData);
+            showSuccessAlert('Actualización Exitosa', 'El producto ha sido actualizado correctamente.');
             setEditingRowId(null);
             if (onProductUpdated) {
                 onProductUpdated();
             }
         } catch (error) {
             console.error('Failed to update product', error);
-            alert('Error al actualizar el producto');
+            showErrorAlert('Error de Actualización', 'Error al actualizar el producto');
         } finally {
             setIsSaving(false);
         }
@@ -113,7 +115,7 @@ export const ProductsTable = ({
                     return (
                         <div className="col-price text-right">
                             <span className="price-number">
-                                ${price.toFixed(2)}
+                                S/ {price.toFixed(2)}
                             </span>
                         </div>
                     );
