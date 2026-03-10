@@ -1,11 +1,15 @@
 import React from 'react';
 import { CreateProductForm } from '../components/CreateProductForm';
 import '../components/CreateProductForm.css';
-export const CreateProductPage: React.FC = () => {
+interface CreateProductPageProps {
+    onCancel?: () => void;
+}
+
+export const CreateProductPage: React.FC<CreateProductPageProps> = ({ onCancel }) => {
     return (
         <div className="product-page-wrapper">
             {}
-            <CreateProductForm />
+            <CreateProductForm onCancel={onCancel} />
         </div>
     );
 };

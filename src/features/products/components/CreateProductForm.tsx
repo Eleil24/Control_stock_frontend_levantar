@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { useCreateProduct } from '../hooks/useCreateProduct';
+import { showSuccessAlert, showErrorAlert } from '../../../utils/alerts';
 import './CreateProductForm.css';
-export const CreateProductForm: React.FC = () => {
-    const { mutate, isLoading, isSuccess, error } = useCreateProduct();
+
+interface CreateProductFormProps {
+    onCancel?: () => void;
+}
+
+export const CreateProductForm: React.FC<CreateProductFormProps> = ({ onCancel }) => {
+    const { mutate, isLoading } = useCreateProduct();
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -14,13 +20,19 @@ export const CreateProductForm: React.FC = () => {
     };
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault(); 
-        await mutate({
-            name: formData.name,
-            description: formData.description,
-            price: Number(formData.price),
-        });
-        if (!error) {
+        try {
+            await mutate({
+                name: formData.name,
+                description: formData.description,
+                price: Number(formData.price),
+            });
+            showSuccessAlert('Producto Creado', 'El producto ha sido creado exitosamente.');
             setFormData({ name: '', description: '', price: '' });
+            if (onCancel) {
+                onCancel();
+            }
+        } catch (err: any) {
+            showErrorAlert('Error', err.message || 'Ha ocurrido un error al crear el producto');
         }
     };
     return (
@@ -45,7 +57,7 @@ export const CreateProductForm: React.FC = () => {
                     />
                 </div>
                 <div className="product-form-group">
-                    <label htmlFor="price" className="product-form-label">Precio ($)</label>
+                    <label htmlFor="price" className="product-form-label">Precio (S/ )</label>
                     <input
                         type="number"
                         id="price"
@@ -72,26 +84,26 @@ export const CreateProductForm: React.FC = () => {
                     />
                 </div>
                 {}
-                <button
-                    type="submit"
-                    className="product-form-button"
-                    disabled={isLoading}
-                >
-                    {isLoading ? 'Creando...' : 'Guardar Producto'}
-                </button>
+                <div className="product-form-actions">
+                    <button
+                        type="submit"
+                        className="product-form-button submit-btn"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Creando...' : 'Guardar Producto'}
+                    </button>
+                    {onCancel && (
+                        <button
+                            type="button"
+                            className="product-form-button cancel-btn"
+                            onClick={onCancel}
+                            disabled={isLoading}
+                        >
+                            Cancelar y Volver
+                        </button>
+                    )}
+                </div>
             </form>
-            {}
-            {isSuccess && (
-                <div className="product-form-message success">
-                    ¡Producto creado con éxito!
-                </div>
-            )}
-            {}
-            {error && (
-                <div className="product-form-message error">
-                    {error}
-                </div>
-            )}
         </div>
     );
 };

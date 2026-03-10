@@ -44,7 +44,7 @@ const AppContent = () => {
           </ProtectedRoute>
         )}
         {activeTab === 'list' && <ProductsListPage />}
-        {activeTab === 'create' && <CreateProductPage />}
+        {activeTab === 'create' && <CreateProductPage onCancel={() => setActiveTab('list')} />}
         {activeTab === 'movement' && <CreateMovementPage />}
         {activeTab === 'movements-list' && <StockMovementsListPage />}
         {}

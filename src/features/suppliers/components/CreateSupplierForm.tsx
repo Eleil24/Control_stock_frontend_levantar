@@ -22,6 +22,9 @@ export const CreateSupplierForm: React.FC<CreateSupplierFormProps> = ({ onCancel
             setName('');
             setPhone('');
             setEmail('');
+            if (onCancel) {
+                onCancel();
+            }
         } catch (err) {
             console.error(err);
             showErrorAlert('Error', 'Hubo un problema al registrar el proveedor.');
